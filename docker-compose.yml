@@ -1,0 +1,23 @@
+version: '2.1'
+services:
+    spark-master:
+        image: michaelcataldo/spark-2.4.4
+        container_name: spark-master
+        ports:
+            - "8080:8080"
+        command: "master"
+    spark-worker:
+        image: michaelcataldo/spark-2.4.4
+        depends_on:
+            - spark-master
+        command: "slave spark://spark-master:7077"
+    jupyter-lab:
+        image: michaelcataldo/spark-2.4.4-jupyterlab
+        depends_on:
+            - spark-master
+        container_name: jupyter-lab
+        ports:
+            - "8888:8888"
+        volumes:
+            - ./:/usr/local/spark
+        command: "--master spark://spark-master:7077"
